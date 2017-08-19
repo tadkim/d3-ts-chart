@@ -55,6 +55,10 @@ export interface ChartSeriesConfigInterface {
     fieldY: string;
     type: string;
     displayStandard: string;
+    textLabel?: {
+        show: boolean;
+        orient: string;
+    }
 }
 
 

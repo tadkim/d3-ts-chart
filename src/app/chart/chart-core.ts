@@ -8,6 +8,8 @@ import {
 } from './chart.config.interface';
 
 import { ChartColumnSeries } from './chart-column-series';
+import { ChartLineSeries } from './chart-line-series';
+
 
 import { select } from 'd3-selection';
 
@@ -60,7 +62,7 @@ export class ChartCore {
                 {
                     category: 'A' + i,
                     datetime: new Date(2017, 0, i).getTime(),
-                    numeric1: Math.round(Math.random()*100),
+                    numeric1: Math.round(Math.random()*100) - 30,
                     numeric2: Math.round(Math.random()*100)
                 }
             )
@@ -113,6 +115,10 @@ export class ChartCore {
             .attr('transform', 'translate(0,0)');
 
         this.config.axis.map((axis: ChartAxisConfigInterface) => {
+            const data = this.dataProvider.map((d: any) => {
+                return d[axis.field];
+            });
+
             const axisParam: ChartAxisParamInterface = {
                 field: axis.field,
                 type: axis.type,
@@ -122,7 +128,8 @@ export class ChartCore {
                 height: this.height,
                 margin: this.config.info.margin,
                 displayStandard: axis.displayStandard,
-                target: this.axisGroupElement
+                target: this.axisGroupElement,
+                dataProvider: data
             };
 
             this.axis.push(new ChartAxis(axisParam))
@@ -149,11 +156,16 @@ export class ChartCore {
                 fieldY: series.fieldY,
                 type: series.type
             };
+
+            if(series.textLabel){
+                seriesParam.textLabel = series.textLabel;
+            }
+
             let seriesTemp: any;
             if (series.type === 'column') {
                 seriesTemp = new ChartColumnSeries(seriesParam);
-            } else {
-
+            } else if(series.type === 'line') {
+                seriesTemp = new ChartLineSeries(seriesParam);
             }
             this.series.push(seriesTemp);
         });

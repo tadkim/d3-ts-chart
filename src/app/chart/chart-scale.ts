@@ -1,5 +1,5 @@
 import { ScaleParamInterface } from './chart.config.interface';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import { scaleBand, scaleLinear, scaleTime } from 'd3-scale';
 import { min, max } from 'd3';
 
 import { extent } from 'd3';
@@ -52,6 +52,14 @@ export class ChartScale {
                 .padding(.2);
         } else {
 
+            //domain에는 min, max 값이 필요하다.
+            const startDay: Date = this.config.data[0];
+            const endindex: number = this.config.data.length-1;
+            const endDay: Date = this.config.data[endindex];
+
+            this.scale = scaleTime()
+                .domain([startDay, endDay])
+                .range(this.range);
         }
     }
 
